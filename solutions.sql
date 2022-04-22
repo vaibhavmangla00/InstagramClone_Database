@@ -54,3 +54,17 @@ inner join likes
 on users.id=likes.user_id
 group by users.id
 having posts_liked=257;
+
+-- 8.  Preventing Self Follows ( Using Database Triggers )
+
+DELIMITER $$
+CREATE TRIGGer prevent_self_follows
+    BEFORE INSERT ON follows FOR EACH ROW
+    BEGIN
+        IF NEW.follower_id = NEW.followee_id
+        THEN
+            SIGNAL SQLSTATE '45000'
+        END IF;
+    END;
+$$
+DELIMITER;
